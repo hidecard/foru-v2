@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Volume2, VolumeX, Music, Gift, Calendar, Camera, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
+import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Music, Gift, Calendar, Camera, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 
 interface StarMoment {
@@ -74,7 +74,7 @@ export default function Home() {
   const [showRomanticFinal, setShowRomanticFinal] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [emailStatus, setEmailStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [soundEnabled, setSoundEnabled] = useState(false)
+
   const [shootingStars, setShootingStars] = useState<ShootingStar[]>([])
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const [floatingMessages, setFloatingMessages] = useState<FloatingMessage[]>([])
@@ -100,7 +100,6 @@ export default function Home() {
   const { scrollY } = useScroll()
   const backgroundY = useTransform(scrollY, [0, 1000], [0, -200])
   
-  const audioRef = useRef<HTMLAudioElement | null>(null)
   const formRef = useRef<HTMLDivElement>(null)
   const constellationRef = useRef<HTMLDivElement>(null)
 
@@ -317,51 +316,7 @@ export default function Home() {
     }
   }, [starAnswers])
 
-  // Initialize audio with fallback
-  useEffect(() => {
-    const initAudio = async () => {
-      try {
-        // Create audio element
-        audioRef.current = new Audio()
-        
-        // Try to load the heartbeat sound
-        const audioSources = [
-          '/heartbeat.mp3',
-          '/heartbeat.wav',
-          '/heartbeat.ogg',
-          'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT' // Minimal heartbeat sound as fallback
-        ]
-        
-        for (const source of audioSources) {
-          try {
-            audioRef.current.src = source
-            await audioRef.current.load()
-            break // Stop trying if we successfully load one
-          } catch (e) {
-            console.log(`Failed to load audio source: ${source}`)
-            continue
-          }
-        }
-        
-        if (audioRef.current) {
-          audioRef.current.loop = true
-          audioRef.current.volume = 0.3
-        }
-      } catch (error) {
-        console.error('Error initializing audio:', error)
-        // Audio is optional, so we don't crash if it fails
-      }
-    }
-    
-    initAudio()
-    
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-    }
-  }, [])
+
 
   // Handle keyboard visibility on mobile
   useEffect(() => {
@@ -522,14 +477,7 @@ export default function Home() {
       createParticles(x, y)
     }
     
-    // Play heartbeat sound if this is the last star
-    if (starId === 'love' && soundEnabled && audioRef.current) {
-      try {
-        await audioRef.current.play()
-      } catch (error) {
-        console.error('Error playing audio:', error)
-      }
-    }
+
     
     setSelectedStar(null)
     
@@ -776,22 +724,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Sound toggle button */}
-      <button
-        onClick={() => {
-          setSoundEnabled(!soundEnabled)
-          if (audioRef.current) {
-            if (soundEnabled) {
-              audioRef.current.pause()
-            } else {
-              audioRef.current.play().catch(e => console.error('Error playing audio:', e))
-            }
-          }
-        }}
-        className="fixed top-4 right-4 z-50 p-2 rounded-full bg-white/10 backdrop-blur-md text-white"
-      >
-        {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-      </button>
+
 
       {/* Special date countdown */}
       <AnimatePresence>
