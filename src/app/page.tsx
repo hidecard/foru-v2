@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Music, Gift, Calendar, Camera, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
+import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Music, Gift, Calendar, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 
 interface StarMoment {
@@ -102,10 +102,14 @@ export default function Home() {
   const [compatibilityScore, setCompatibilityScore] = useState(0)
   const [playlist, setPlaylist] = useState<string[]>([])
   const [newSong, setNewSong] = useState('')
+  const [youtubeSongs, setYoutubeSongs] = useState<{title: string, url: string, thumbnail: string}[]>([])
+  const [newYoutubeUrl, setNewYoutubeUrl] = useState('')
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [gameScore, setGameScore] = useState(0)
   const [challengeCompleted, setChallengeCompleted] = useState<string[]>([])
   const [selectedDateIdea, setSelectedDateIdea] = useState<DateIdea | null>(null)
+
+
 
   // Gift Shop states
   const [showGiftShop, setShowGiftShop] = useState(false)
@@ -589,20 +593,61 @@ export default function Home() {
     if (crushName && yourName) {
       // Simple compatibility calculation (you can make this more sophisticated)
       const combinedLength = crushName.length + yourName.length
-      const commonLetters = crushName.toLowerCase().split('').filter(letter => 
+      const commonLetters = crushName.toLowerCase().split('').filter(letter =>
         yourName.toLowerCase().includes(letter)
       ).length
-      
+
       const score = Math.min(95, Math.floor((commonLetters / combinedLength) * 100 + Math.random() * 20))
       setCompatibilityScore(score)
     }
   }
+
+  // Initialize default love songs
+  useEffect(() => {
+    if (youtubeSongs.length === 0) {
+      const defaultLoveSongs = [
+        { title: "Perfect - Ed Sheeran", url: "https://www.youtube.com/watch?v=2Vv-BfVoq4g", thumbnail: "https://img.youtube.com/vi/2Vv-BfVoq4g/maxresdefault.jpg" },
+        { title: "All of Me - John Legend", url: "https://www.youtube.com/watch?v=450p7goxZqg", thumbnail: "https://img.youtube.com/vi/450p7goxZqg/maxresdefault.jpg" },
+        { title: "Thinking Out Loud - Ed Sheeran", url: "https://www.youtube.com/watch?v=lp-EO5I60KA", thumbnail: "https://img.youtube.com/vi/lp-EO5I60KA/maxresdefault.jpg" },
+        { title: "At Last - Etta James", url: "https://www.youtube.com/watch?v=6I4tgMP-2ho", thumbnail: "https://img.youtube.com/vi/6I4tgMP-2ho/maxresdefault.jpg" },
+        { title: "Can't Help Falling in Love - Elvis Presley", url: "https://www.youtube.com/watch?v=vGJTaP6anOU", thumbnail: "https://img.youtube.com/vi/vGJTaP6anOU/maxresdefault.jpg" },
+        { title: "Unchained Melody - The Righteous Brothers", url: "https://www.youtube.com/watch?v=qIiIqCkLYjI", thumbnail: "https://img.youtube.com/vi/qIiIqCkLYjI/maxresdefault.jpg" },
+        { title: "Make You Feel My Love - Adele", url: "https://www.youtube.com/watch?v=r5W2KXN1FHE", thumbnail: "https://img.youtube.com/vi/r5W2KXN1FHE/maxresdefault.jpg" },
+        { title: "I Will Always Love You - Whitney Houston", url: "https://www.youtube.com/watch?v=3JWTaaS7LdU", thumbnail: "https://img.youtube.com/vi/3JWTaaS7LdU/maxresdefault.jpg" },
+        { title: "Stand by Me - Ben E. King", url: "https://www.youtube.com/watch?v=hwZNL7QVJjE", thumbnail: "https://img.youtube.com/vi/hwZNL7QVJjE/maxresdefault.jpg" },
+        { title: "Wonderful Tonight - Eric Clapton", url: "https://www.youtube.com/watch?v=4PK7XGXJqGg", thumbnail: "https://img.youtube.com/vi/4PK7XGXJqGg/maxresdefault.jpg" }
+      ]
+      setYoutubeSongs(defaultLoveSongs)
+    }
+  }, [])
 
   // Add song to playlist
   const addSong = () => {
     if (newSong.trim()) {
       setPlaylist(prev => [...prev, newSong])
       setNewSong('')
+    }
+  }
+
+  // Add YouTube song to playlist
+  const addYoutubeSong = () => {
+    if (newYoutubeUrl.trim()) {
+      // Extract video ID from YouTube URL
+      const videoId = newYoutubeUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1]
+
+      if (videoId) {
+        const title = `YouTube Song ${youtubeSongs.length + 1}` // In a real app, you'd fetch the actual title
+        const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+
+        setYoutubeSongs(prev => [...prev, {
+          title,
+          url: newYoutubeUrl,
+          thumbnail
+        }])
+        setNewYoutubeUrl('')
+      } else {
+        alert('Please enter a valid YouTube URL')
+      }
     }
   }
 
@@ -1056,7 +1101,7 @@ export default function Home() {
                 ))}
                 
                 {/* Star detail modal */}
-                <AnimatePresence>
+                <AnimatePresence>Our Love Playlist
                   {selectedStar && (
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -1193,7 +1238,8 @@ export default function Home() {
                       { id: 'games', label: 'Games', icon: <Gamepad2 className="w-4 h-4" /> },
                       { id: 'playlist', label: 'Playlist', icon: <Music className="w-4 h-4" /> },
                       { id: 'challenges', label: 'Challenges', icon: <TrendingUp className="w-4 h-4" /> },
-                      { id: 'gifts', label: 'Gifts', icon: <Gift className="w-4 h-4" /> }
+                      { id: 'gifts', label: 'Gifts', icon: <Gift className="w-4 h-4" /> },
+
                     ].map(tab => (
                       <button
                         key={tab.id}
@@ -1344,50 +1390,135 @@ export default function Home() {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="max-w-2xl mx-auto"
+                      className="max-w-4xl mx-auto"
                     >
                       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-pink-400/30">
                         <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                           <Music className="w-6 h-6 text-pink-400" />
                           Our Love Playlist
                         </h3>
-                        
-                        <div className="space-y-4 mb-6">
-                          {playlist.map((song, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="bg-white/5 rounded-lg p-4 flex items-center gap-3"
+
+                        {/* YouTube Songs Section */}
+                        {youtubeSongs.length > 0 && (
+                          <div className="mb-8">
+                            <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                              <Heart className="w-5 h-5 text-red-400" />
+                              YouTube Love Songs
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {youtubeSongs.map((song, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="bg-white/5 rounded-lg p-4 border border-red-400/30"
+                                >
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <img
+                                      src={song.thumbnail}
+                                      alt={song.title}
+                                      className="w-16 h-12 rounded object-cover"
+                                      onError={(e) => {
+                                        e.currentTarget.src = 'https://via.placeholder.com/64x48/FF69B4/FFFFFF?text=YT'
+                                      }}
+                                    />
+                                    <div className="flex-1">
+                                      <p className="text-white font-medium text-sm">{song.title}</p>
+                                      <p className="text-purple-300 text-xs">YouTube Song</p>
+                                    </div>
+                                  </div>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => window.open(song.url, '_blank')}
+                                    className="w-full px-3 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white text-sm font-semibold flex items-center justify-center gap-2"
+                                  >
+                                    <Heart className="w-4 h-4 text-white" />
+                                    Play on YouTube
+                                  </motion.button>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Regular Songs Section */}
+                        {playlist.length > 0 && (
+                          <div className="mb-8">
+                            <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                              <Music className="w-5 h-5 text-pink-400" />
+                              Song Titles
+                            </h4>
+                            <div className="space-y-4">
+                              {playlist.map((song, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="bg-white/5 rounded-lg p-4 flex items-center gap-3"
+                                >
+                                  <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
+                                    <Music className="w-6 h-6 text-white" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="text-white font-medium">{song}</p>
+                                    <p className="text-purple-300 text-sm">Added by you</p>
+                                  </div>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Add New Songs */}
+                        <div className="space-y-6">
+                          {/* YouTube URL Input */}
+                          <div className="space-y-4">
+                            <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                              Add YouTube Love Song
+                            </h4>
+                            <input
+                              type="url"
+                              value={newYoutubeUrl}
+                              onChange={(e) => setNewYoutubeUrl(e.target.value)}
+                              placeholder="Paste YouTube URL (e.g., https://youtu.be/... or https://youtube.com/watch?v=...)"
+                              className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-red-400"
+                            />
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={addYoutubeSong}
+                              className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold flex items-center justify-center gap-2"
                             >
-                              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
-                                <Music className="w-6 h-6 text-white" />
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-white font-medium">{song}</p>
-                                <p className="text-purple-300 text-sm">Added by you</p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                        
-                        <div className="space-y-4">
-                          <input
-                            type="text"
-                            value={newSong}
-                            onChange={(e) => setNewSong(e.target.value)}
-                            placeholder="Add a song to our playlist..."
-                            className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400"
-                          />
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={addSong}
-                            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold"
-                          >
-                            Add to Playlist
-                          </motion.button>
+                              <Heart className="w-5 h-5 text-white" />
+                              Add YouTube Song
+                            </motion.button>
+                          </div>
+
+                          {/* Regular Song Input */}
+                          <div className="space-y-4">
+                            <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                              <Music className="w-5 h-5 text-pink-400" />
+                              Add Song Title
+                            </h4>
+                            <input
+                              type="text"
+                              value={newSong}
+                              onChange={(e) => setNewSong(e.target.value)}
+                              placeholder="Add a song to our playlist..."
+                              className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400"
+                            />
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={addSong}
+                              className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold"
+                            >
+                              Add to Playlist
+                            </motion.button>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
@@ -1607,6 +1738,121 @@ export default function Home() {
                             </div>
                           </motion.div>
                         )}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Memories Tab */}
+                  {activeTab === 'memories' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="max-w-4xl mx-auto"
+                    >
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-pink-400/30">
+                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                          <Camera className="w-6 h-6 text-pink-400" />
+                          Our Memories
+                        </h3>
+
+                        {/* Memory Categories */}
+                        <div className="mb-8">
+                          <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <Heart className="w-5 h-5 text-pink-400" />
+                            Memory Moments
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[
+                              { title: "First Meeting", emoji: "👋", description: "That magical moment we first met" },
+                              { title: "Our First Date", emoji: "🍽️", description: "The beginning of our beautiful story" },
+                              { title: "Sweet Moments", emoji: "😘", description: "All those little moments that matter" },
+                              { title: "Adventures Together", emoji: "🏔️", description: "Exploring the world hand in hand" },
+                              { title: "Inside Jokes", emoji: "😂", description: "Our private language of laughter" },
+                              { title: "Future Dreams", emoji: "✨", description: "All the wonderful things to come" }
+                            ].map((memory, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-white/5 rounded-lg p-4 border border-purple-400/30 hover:border-pink-400/50 transition-all cursor-pointer"
+                              >
+                                <div className="text-center">
+                                  <div className="text-3xl mb-2">{memory.emoji}</div>
+                                  <h5 className="text-white font-semibold mb-2">{memory.title}</h5>
+                                  <p className="text-purple-300 text-sm">{memory.description}</p>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Memory Journal */}
+                        <div className="space-y-6">
+                          <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                            <BookOpen className="w-5 h-5 text-pink-400" />
+                            Memory Journal
+                          </h4>
+
+                          {/* Memory Entry Form */}
+                          <div className="bg-white/5 rounded-lg p-6 border border-purple-400/30">
+                            <div className="space-y-4">
+                              <input
+                                type="text"
+                                value={newSong}
+                                onChange={(e) => setNewSong(e.target.value)}
+                                placeholder="Memory title (e.g., 'Our First Kiss')"
+                                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400"
+                              />
+                              <textarea
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                placeholder="Describe this special memory..."
+                                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400 resize-none"
+                                rows={4}
+                              />
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => {
+                                  if (newSong.trim() && newMessage.trim()) {
+                                    // Here you could save to localStorage or a backend
+                                    alert(`Memory "${newSong}" saved! 💕`)
+                                    setNewSong('')
+                                    setNewMessage('')
+                                  }
+                                }}
+                                className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold"
+                              >
+                                Save Memory
+                              </motion.button>
+                            </div>
+                          </div>
+
+                          {/* Memory Quotes */}
+                          <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-lg p-6 border border-pink-400/30">
+                            <h5 className="text-white font-semibold mb-4 text-center">💝 Memory Quotes</h5>
+                            <div className="space-y-3">
+                              {[
+                                "\"Every memory with you is a treasure I hold in my heart.\"",
+                                "\"The best memories are the ones we create together.\"",
+                                "\"You make every moment feel like a beautiful memory.\"",
+                                "\"Our love story is written in the stars and in our memories.\"",
+                                "\"Thank you for being my favorite memory and my greatest adventure.\""
+                              ].map((quote, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="text-center"
+                                >
+                                  <p className="text-white italic text-sm">{quote}</p>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   )}
