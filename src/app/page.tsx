@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Volume2, VolumeX, Music, Gift, Calendar, Camera, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Dice, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
+import { Heart, Sparkles, Clock, Feather, Puzzle, Star, MessageCircle, ArrowRight, MapPin, X, Volume2, VolumeX, Music, Gift, Calendar, Camera, Download, Share2, Lock, Unlock, Mail, Phone, Map, Cake, Wine, Flower, Users, Gamepad2, Target, TrendingUp, MessageSquare, Zap, Smile } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 
 interface StarMoment {
@@ -58,7 +58,7 @@ interface DateIdea {
   id: string
   title: string
   description: string
-  mood: 'romantic' | 'adventurous' | 'cozy' | 'creative'
+  mood: 'romantic' | 'adventurous' | 'cozy' | 'creative' | 'fun' | 'casual' | 'meaningful' | 'exciting' | 'relaxing' | 'educational' | 'peaceful'
   icon: string
 }
 
@@ -158,48 +158,56 @@ export default function Home() {
   ]
 
   const dateIdeas: DateIdea[] = [
-    {
-      id: '1',
-      title: 'Stargazing Picnic',
-      description: 'Blanket, snacks, and constellation watching',
-      mood: 'romantic',
-      icon: '⭐'
-    },
-    {
-      id: '2',
-      title: 'Adventure Quest',
-      description: 'Scavenger hunt around the city',
-      mood: 'adventurous',
-      icon: '🗺️'
-    },
-    {
-      id: '3',
-      title: 'Movie Marathon',
-      description: 'Cozy up with favorite films and snacks',
-      mood: 'cozy',
-      icon: '🎬'
-    },
-    {
-      id: '4',
-      title: 'Art & Wine',
-      description: 'Paint together while sipping wine',
-      mood: 'creative',
-      icon: '🎨'
-    },
-    {
-      id: '5',
-      title: 'Sunset Beach Walk',
-      description: 'Hand-in-hand walk as the sun sets',
-      mood: 'romantic',
-      icon: '🌅'
-    },
-    {
-      id: '6',
-      title: 'Cooking Challenge',
-      description: 'Make a new recipe together',
-      mood: 'creative',
-      icon: '👨‍🍳'
-    }
+    { id: '1', title: 'Stargazing Picnic', description: 'Blanket, snacks, and constellation watching', mood: 'romantic', icon: '⭐' },
+    { id: '2', title: 'Adventure Quest', description: 'Scavenger hunt around the city', mood: 'adventurous', icon: '🗺️' },
+    { id: '3', title: 'Movie Marathon', description: 'Cozy up with favorite films and snacks', mood: 'cozy', icon: '🎬' },
+    { id: '4', title: 'Art & Wine', description: 'Paint together while sipping wine', mood: 'creative', icon: '🎨' },
+    { id: '5', title: 'Sunset Beach Walk', description: 'Hand-in-hand walk as the sun sets', mood: 'romantic', icon: '🌅' },
+    { id: '6', title: 'Cooking Challenge', description: 'Make a new recipe together', mood: 'creative', icon: '👨‍🍳' },
+    { id: '7', title: 'Mini Road Trip', description: 'Drive to a nearby town and explore', mood: 'adventurous', icon: '🚗' },
+    { id: '8', title: 'Bookstore Date', description: 'Browse books and pick one for each other', mood: 'cozy', icon: '📚' },
+    { id: '9', title: 'Dance Night', description: 'Take a dance class together or dance at home', mood: 'fun', icon: '💃' },
+    { id: '10', title: 'Farmers Market Stroll', description: 'Shop fresh produce and try local treats', mood: 'casual', icon: '🛒' },
+    { id: '11', title: 'Karaoke Night', description: 'Sing your favorite songs together', mood: 'fun', icon: '🎤' },
+    { id: '12', title: 'Hiking Adventure', description: 'Explore a scenic trail and enjoy nature', mood: 'adventurous', icon: '🥾' },
+    { id: '13', title: 'Ice Cream Tasting', description: 'Try different flavors at a local shop', mood: 'fun', icon: '🍦' },
+    { id: '14', title: 'Sunrise Yoga', description: 'Start the day with a calming yoga session together', mood: 'peaceful', icon: '🧘‍♀️' },
+    { id: '15', title: 'DIY Spa Night', description: 'Relax with facials, massages, and bath bombs', mood: 'cozy', icon: '🛁' },
+    { id: '16', title: 'Pottery Class', description: 'Make clay pots or sculptures together', mood: 'creative', icon: '🏺' },
+    { id: '17', title: 'Biking Adventure', description: 'Bike through parks or trails', mood: 'adventurous', icon: '🚴‍♂️' },
+    { id: '18', title: 'Coffee Tasting', description: 'Try different coffee blends at a café', mood: 'cozy', icon: '☕' },
+    { id: '19', title: 'Board Game Night', description: 'Play competitive or cooperative games at home', mood: 'fun', icon: '🎲' },
+    { id: '20', title: 'Volunteer Together', description: 'Spend a day helping a charity', mood: 'meaningful', icon: '🤝' },
+    { id: '21', title: 'Sunset Rooftop Drinks', description: 'Enjoy cocktails with a city view', mood: 'romantic', icon: '🍹' },
+    { id: '22', title: 'Zoo or Aquarium Visit', description: 'See exotic animals and marine life', mood: 'fun', icon: '🐠' },
+    { id: '23', title: 'Mini Golf', description: 'Play mini golf for some playful competition', mood: 'fun', icon: '⛳' },
+    { id: '24', title: 'Music Concert', description: 'Attend a live concert of your favorite band', mood: 'exciting', icon: '🎵' },
+    { id: '25', title: 'Scenic Train Ride', description: 'Enjoy beautiful landscapes from a train', mood: 'relaxing', icon: '🚂' },
+    { id: '26', title: 'Potluck Dinner', description: 'Cook dishes together and share with friends', mood: 'cozy', icon: '🍲' },
+    { id: '27', title: 'Photography Walk', description: 'Take pictures of interesting spots in your city', mood: 'creative', icon: '📸' },
+    { id: '28', title: 'Roller Skating', description: 'Go to a roller rink or park and skate together', mood: 'fun', icon: '🛼' },
+    { id: '29', title: 'Visit a Museum', description: 'Explore art, history, or science exhibits', mood: 'educational', icon: '🏛️' },
+    { id: '30', title: 'Sushi Making Night', description: 'Prepare sushi rolls together at home', mood: 'creative', icon: '🍣' },
+    { id: '31', title: 'Camping Trip', description: 'Sleep under the stars in a tent or cabin', mood: 'adventurous', icon: '🏕️' },
+    { id: '32', title: 'Hot Air Balloon Ride', description: 'See the landscape from above', mood: 'romantic', icon: '🎈' },
+    { id: '33', title: 'Fishing Trip', description: 'Relax by a lake or river while fishing', mood: 'peaceful', icon: '🎣' },
+    { id: '34', title: 'Visit Botanical Gardens', description: 'Stroll through beautiful flowers and plants', mood: 'peaceful', icon: '🌸' },
+    { id: '35', title: 'Trivia Night', description: 'Test your knowledge at a local pub or online', mood: 'fun', icon: '❓' },
+    { id: '36', title: 'Pot Painting', description: 'Paint flower pots for home décor', mood: 'creative', icon: '🖌️' },
+    { id: '37', title: 'Theater Night', description: 'Watch a play or musical performance', mood: 'romantic', icon: '🎭' },
+    { id: '38', title: 'Farm Visit', description: 'Pick fruits or feed animals together', mood: 'fun', icon: '🍓' },
+    { id: '39', title: 'Bike & Picnic', description: 'Bike to a park and enjoy a picnic', mood: 'adventurous', icon: '🚲' },
+    { id: '40', title: 'Sunrise Beach Yoga', description: 'Stretch and meditate as the sun rises', mood: 'peaceful', icon: '🌅🧘‍♂️' },
+    { id: '41', title: 'Street Food Tour', description: 'Try street food from different vendors', mood: 'fun', icon: '🌮' },
+    { id: '42', title: 'Ice Skating', description: 'Skate at an indoor rink or outdoor frozen lake', mood: 'fun', icon: '⛸️' },
+    { id: '43', title: 'Puzzle Night', description: 'Work on a challenging puzzle together', mood: 'cozy', icon: '🧩' },
+    { id: '44', title: 'Potluck Movie Night', description: 'Cook small dishes and watch a film together', mood: 'cozy', icon: '🍿' },
+    { id: '45', title: 'Candlelit Dinner', description: 'Cook or order dinner and eat by candlelight', mood: 'romantic', icon: '🕯️' },
+    { id: '46', title: 'Rock Climbing', description: 'Indoor or outdoor climbing challenge', mood: 'adventurous', icon: '🧗‍♀️' },
+    { id: '47', title: 'Visit a Planetarium', description: 'Learn about stars and planets indoors', mood: 'romantic', icon: '🌌' },
+    { id: '48', title: 'Boardwalk Stroll', description: 'Walk by the water and enjoy the breeze', mood: 'romantic', icon: '🌊' },
+    { id: '49', title: 'Potluck Game Night', description: 'Cook and play games with friends', mood: 'fun', icon: '🎮' },
+    { id: '50', title: 'Sunset Kayaking', description: 'Paddle together as the sun sets', mood: 'adventurous', icon: '🛶' }
   ]
 
   const chapters = [
