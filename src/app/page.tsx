@@ -547,7 +547,7 @@ export default function Home() {
           message: answer,
           star_answers: JSON.stringify(updatedAnswers, null, 2),
           to_name: 'My Love',
-          reply_to: 'hideaki@example.com', // Replace with your email
+          reply_to: 'hidecard1500@gmail.com', // Replace with your email
         }
 
         console.log('Sending email with params:', templateParams)
