@@ -618,7 +618,7 @@ export default function Home() {
 
   // Draw constellation lines
   const drawConstellation = () => {
-    const lines = []
+    const lines: React.ReactElement[] = []
     for (const star of starMoments) {
       for (const connectedId of star.constellation) {
         const connectedStar = starMoments.find(s => s.id === connectedId)
