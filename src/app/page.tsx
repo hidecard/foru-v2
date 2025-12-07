@@ -1144,7 +1144,6 @@ export default function Home() {
                   <div className="bg-white/10 backdrop-blur-md rounded-full p-1 flex gap-1">
                     {[
                       { id: 'games', label: 'Games', icon: <Gamepad2 className="w-4 h-4" /> },
-                      { id: 'compatibility', label: 'Match', icon: <Target className="w-4 h-4" /> },
                       { id: 'playlist', label: 'Playlist', icon: <Music className="w-4 h-4" /> },
                       { id: 'challenges', label: 'Challenges', icon: <TrendingUp className="w-4 h-4" /> }
                     ].map(tab => (
@@ -1290,75 +1289,7 @@ export default function Home() {
                     </motion.div>
                   )}
 
-                  {/* Compatibility Tab */}
-                  {activeTab === 'compatibility' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="max-w-2xl mx-auto"
-                    >
-                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-pink-400/30">
-                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                          <Target className="w-6 h-6 text-pink-400" />
-                          Love Compatibility Test
-                        </h3>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                          <div>
-                            <label className="text-sm text-purple-300 mb-2">Your Name</label>
-                            <input
-                              type="text"
-                              value={yourName}
-                              onChange={(e) => setYourName(e.target.value)}
-                              placeholder="Enter your name"
-                              className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="text-sm text-purple-300 mb-2">Crush's Name</label>
-                            <input
-                              type="text"
-                              value={crushName}
-                              onChange={(e) => setCrushName(e.target.value)}
-                              placeholder="Enter their name"
-                              className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400"
-                            />
-                          </div>
-                        </div>
-                        
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={calculateCompatibility}
-                          className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold mb-6"
-                        >
-                          Calculate Compatibility
-                        </motion.button>
-                        
-                        {compatibilityScore > 0 && (
-                          <div className="text-center">
-                            <div className="text-4xl font-bold text-pink-300 mb-2">{compatibilityScore}%</div>
-                            <p className="text-lg text-purple-200 mb-4">
-                              {compatibilityScore >= 80 ? "Perfect Match! 💕" :
-                               compatibilityScore >= 60 ? "Great Connection! 💫" :
-                               compatibilityScore >= 40 ? "Growing Potential! 🌱" :
-                               "Keep Exploring! ✨"}
-                            </p>
-                            
-                            <div className="flex justify-center gap-2 mb-4">
-                              {[...Array(5)].map((_, i) => (
-                                <Heart
-                                  key={i}
-                                  className={`w-6 h-6 ${i < Math.floor(compatibilityScore / 20) ? 'text-pink-400 fill-current' : 'text-gray-600'}`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
+
 
                   {/* Playlist Tab */}
                   {activeTab === 'playlist' && (
