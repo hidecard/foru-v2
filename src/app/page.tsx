@@ -62,6 +62,16 @@ interface DateIdea {
   icon: string
 }
 
+interface GiftItem {
+  id: string
+  name: string
+  description: string
+  price: number
+  icon: string
+  category: 'flowers' | 'chocolates' | 'jewelry' | 'teddy' | 'special'
+  color: string
+}
+
 export default function Home() {
   const [currentChapter, setCurrentChapter] = useState(0)
   const [showQuestion, setShowQuestion] = useState(false)
@@ -85,7 +95,7 @@ export default function Home() {
   const [daysUntil, setDaysUntil] = useState(0)
   
   // New crush features states
-  const [activeTab, setActiveTab] = useState<'games' | 'compatibility' | 'playlist' | 'challenges'>('games')
+  const [activeTab, setActiveTab] = useState<'games' | 'playlist' | 'challenges' | 'gifts'>('games')
   const [loveScore, setLoveScore] = useState(0)
   const [crushName, setCrushName] = useState('')
   const [yourName, setYourName] = useState('')
@@ -96,6 +106,14 @@ export default function Home() {
   const [gameScore, setGameScore] = useState(0)
   const [challengeCompleted, setChallengeCompleted] = useState<string[]>([])
   const [selectedDateIdea, setSelectedDateIdea] = useState<DateIdea | null>(null)
+
+  // Gift Shop states
+  const [showGiftShop, setShowGiftShop] = useState(false)
+  const [selectedGift, setSelectedGift] = useState<GiftItem | null>(null)
+  const [giftMessage, setGiftMessage] = useState('')
+  const [isSendingGift, setIsSendingGift] = useState(false)
+  const [giftStatus, setGiftStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [giftCategory, setGiftCategory] = useState<'all' | 'flowers' | 'chocolates' | 'jewelry' | 'teddy' | 'special'>('all')
   
   const { scrollY } = useScroll()
   const backgroundY = useTransform(scrollY, [0, 1000], [0, -200])
@@ -207,6 +225,36 @@ export default function Home() {
     { id: '48', title: 'Boardwalk Stroll', description: 'Walk by the water and enjoy the breeze', mood: 'romantic', icon: '🌊' },
     { id: '49', title: 'Potluck Game Night', description: 'Cook and play games with friends', mood: 'fun', icon: '🎮' },
     { id: '50', title: 'Sunset Kayaking', description: 'Paddle together as the sun sets', mood: 'adventurous', icon: '🛶' }
+  ]
+
+  const giftItems: GiftItem[] = [
+    // Flowers
+    { id: 'rose-red', name: 'Red Rose', description: 'A single perfect red rose symbolizing love', price: 25, icon: '🌹', category: 'flowers', color: 'from-red-500 to-pink-500' },
+    { id: 'rose-bouquet', name: 'Rose Bouquet', description: 'A dozen beautiful red roses', price: 50, icon: '💐', category: 'flowers', color: 'from-red-500 to-pink-500' },
+    { id: 'tulip-bouquet', name: 'Tulip Bouquet', description: 'Colorful tulips for spring romance', price: 35, icon: '🌷', category: 'flowers', color: 'from-purple-500 to-pink-500' },
+    { id: 'sunflower', name: 'Sunflower', description: 'Bright and cheerful sunflower', price: 20, icon: '🌻', category: 'flowers', color: 'from-yellow-500 to-orange-500' },
+    { id: 'lily-white', name: 'White Lily', description: 'Elegant white lily symbolizing purity', price: 30, icon: '🪷', category: 'flowers', color: 'from-white to-gray-300' },
+
+    // Chocolates
+    { id: 'choco-heart', name: 'Heart Chocolate Box', description: 'Assorted chocolates in a heart-shaped box', price: 40, icon: '🍫', category: 'chocolates', color: 'from-brown-600 to-brown-400' },
+    { id: 'choco-truffle', name: 'Chocolate Truffles', description: 'Luxury dark chocolate truffles', price: 35, icon: '🍫', category: 'chocolates', color: 'from-brown-700 to-brown-500' },
+    { id: 'choco-strawberry', name: 'Strawberry Chocolate', description: 'Chocolate-covered strawberries', price: 25, icon: '🍓', category: 'chocolates', color: 'from-red-500 to-pink-500' },
+
+    // Jewelry
+    { id: 'ring-heart', name: 'Heart Ring', description: 'Silver ring with heart-shaped gem', price: 75, icon: '💍', category: 'jewelry', color: 'from-gray-400 to-gray-600' },
+    { id: 'necklace-star', name: 'Star Necklace', description: 'Delicate necklace with star pendant', price: 60, icon: '📿', category: 'jewelry', color: 'from-yellow-400 to-yellow-600' },
+    { id: 'bracelet-love', name: 'Love Bracelet', description: 'Charm bracelet with love symbols', price: 45, icon: '💍', category: 'jewelry', color: 'from-pink-400 to-purple-500' },
+
+    // Teddy Bears
+    { id: 'teddy-small', name: 'Cuddle Teddy', description: 'Small soft teddy bear for hugs', price: 30, icon: '🧸', category: 'teddy', color: 'from-brown-400 to-brown-600' },
+    { id: 'teddy-large', name: 'Giant Teddy', description: 'Large teddy bear for big cuddles', price: 55, icon: '🧸', category: 'teddy', color: 'from-brown-500 to-brown-700' },
+    { id: 'teddy-heart', name: 'Heart Teddy', description: 'Teddy holding a heart pillow', price: 40, icon: '🧸', category: 'teddy', color: 'from-pink-400 to-red-500' },
+
+    // Special
+    { id: 'moon-gift', name: 'Moon Gift', description: 'A piece of the moon just for you', price: 100, icon: '🌙', category: 'special', color: 'from-blue-400 to-purple-600' },
+    { id: 'star-gift', name: 'Star Gift', description: 'A fallen star captured in a box', price: 80, icon: '⭐', category: 'special', color: 'from-yellow-400 to-orange-500' },
+    { id: 'heart-gift', name: 'Crystal Heart', description: 'A crystal heart that glows with love', price: 65, icon: '💖', category: 'special', color: 'from-pink-500 to-red-500' },
+    { id: 'dream-catcher', name: 'Dream Catcher', description: 'Catch sweet dreams and good thoughts', price: 35, icon: '🪬', category: 'special', color: 'from-purple-500 to-blue-500' }
   ]
 
   const chapters = [
@@ -563,6 +611,72 @@ export default function Home() {
     const randomIndex = Math.floor(Math.random() * dateIdeas.length)
     setSelectedDateIdea(dateIdeas[randomIndex])
   }
+
+  // Send gift with email notification
+  const sendGift = async () => {
+    if (!selectedGift || !giftMessage.trim()) return
+
+    setIsSendingGift(true)
+    setGiftStatus('idle')
+
+    try {
+      // Initialize EmailJS with your public key
+      emailjs.init("a63OTrZoVHh5NRE_b")
+
+      const templateParams = {
+        from_name: name || 'Your Secret Admirer',
+        gift_name: selectedGift.name,
+        gift_description: selectedGift.description,
+        gift_price: selectedGift.price,
+        personal_message: giftMessage,
+        to_name: 'My Love',
+        reply_to: 'hidecard1500@gmail.com',
+        gift_icon: selectedGift.icon
+      }
+
+      console.log('Sending gift email with params:', templateParams)
+      console.log('Using EmailJS service: service_269pjgn, template: template_gift_notification')
+
+      const response = await emailjs.send(
+        'service_269pjgn',
+        'template_djqp6jd',
+        templateParams
+      )
+
+      console.log('Gift email sent successfully:', response)
+      setGiftStatus('success')
+
+      // Reset form after successful send
+      setTimeout(() => {
+        setSelectedGift(null)
+        setGiftMessage('')
+        setGiftStatus('idle')
+        setIsSendingGift(false)
+      }, 2000)
+
+    } catch (error: any) {
+      console.error('Failed to send gift email:', error)
+
+      // Provide more detailed error information
+      if (error?.text?.includes('template')) {
+        console.error('EmailJS Error: Template not found. Please create template_gift_notification in your EmailJS dashboard.')
+      } else if (error?.text?.includes('service')) {
+        console.error('EmailJS Error: Service not found. Please check your service ID.')
+      } else if (error?.text?.includes('user')) {
+        console.error('EmailJS Error: User ID not found. Please check your public key.')
+      } else {
+        console.error('EmailJS Error: Unknown error occurred. Please check your EmailJS configuration.')
+      }
+
+      setGiftStatus('error')
+      setIsSendingGift(false)
+    }
+  }
+
+  // Filter gifts by category
+  const filteredGifts = giftCategory === 'all'
+    ? giftItems
+    : giftItems.filter(gift => gift.category === giftCategory)
 
   // Draw constellation lines
   const drawConstellation = () => {
@@ -1078,7 +1192,8 @@ export default function Home() {
                     {[
                       { id: 'games', label: 'Games', icon: <Gamepad2 className="w-4 h-4" /> },
                       { id: 'playlist', label: 'Playlist', icon: <Music className="w-4 h-4" /> },
-                      { id: 'challenges', label: 'Challenges', icon: <TrendingUp className="w-4 h-4" /> }
+                      { id: 'challenges', label: 'Challenges', icon: <TrendingUp className="w-4 h-4" /> },
+                      { id: 'gifts', label: 'Gifts', icon: <Gift className="w-4 h-4" /> }
                     ].map(tab => (
                       <button
                         key={tab.id}
@@ -1290,7 +1405,7 @@ export default function Home() {
                           <TrendingUp className="w-6 h-6 text-pink-400" />
                           Couple's Challenges
                         </h3>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                           {[
                             { title: "Send a good morning text", icon: "🌅", points: 10 },
@@ -1335,22 +1450,22 @@ export default function Home() {
                             </motion.div>
                           ))}
                         </div>
-                        
+
                         <div className="text-center">
                           <p className="text-lg text-purple-200 mb-4">
                             Total Points: {challengeCompleted.reduce((acc, title) => {
                               const challenge = [
                                 { title: "Send a good morning text", points: 10 },
-                                { title: "Share a favorite memory", points: 15 },
-                                { title: "Plan a surprise date", points: 25 },
-                                { title: "Write a love letter", points: 20 },
-                                { title: "Take a selfie together", points: 10 },
-                                { title: "Cook a meal together", points: 30 }
+                                { title: "Share a favorite memory", icon: "💭", points: 15 },
+                                { title: "Plan a surprise date", icon: "🎁", points: 25 },
+                                { title: "Write a love letter", icon: "💌", points: 20 },
+                                { title: "Take a selfie together", icon: "📸", points: 10 },
+                                { title: "Cook a meal together", icon: "🍳", points: 30 }
                               ].find(c => c.title === title)
                               return acc + (challenge?.points || 0)
                             }, 0)}
                           </p>
-                          
+
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -1360,7 +1475,7 @@ export default function Home() {
                             Generate Date Idea
                           </motion.button>
                         </div>
-                        
+
                         {selectedDateIdea && (
                           <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -1370,6 +1485,126 @@ export default function Home() {
                             <div className="text-3xl mb-2">{selectedDateIdea.icon}</div>
                             <h4 className="text-xl font-bold text-white mb-2">{selectedDateIdea.title}</h4>
                             <p className="text-purple-200">{selectedDateIdea.description}</p>
+                          </motion.div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Gift Shop Tab */}
+                  {activeTab === 'gifts' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="max-w-4xl mx-auto"
+                    >
+                      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-pink-400/30">
+                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                          <Gift className="w-6 h-6 text-pink-400" />
+                          Virtual Gift Shop
+                        </h3>
+
+                        {/* Category Filter */}
+                        <div className="flex flex-wrap justify-center gap-2 mb-6">
+                          {[
+                            { id: 'all', label: 'All Gifts', icon: '🎁' },
+                            { id: 'flowers', label: 'Flowers', icon: '🌹' },
+                            { id: 'chocolates', label: 'Chocolates', icon: '🍫' },
+                            { id: 'jewelry', label: 'Jewelry', icon: '💍' },
+                            { id: 'teddy', label: 'Teddy Bears', icon: '🧸' },
+                            { id: 'special', label: 'Special', icon: '✨' }
+                          ].map(category => (
+                            <button
+                              key={category.id}
+                              onClick={() => setGiftCategory(category.id as any)}
+                              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
+                                giftCategory === category.id
+                                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                                  : 'bg-white/10 text-purple-200 hover:text-white'
+                              }`}
+                            >
+                              <span>{category.icon}</span>
+                              <span className="text-sm">{category.label}</span>
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Gift Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                          {filteredGifts.map((gift, index) => (
+                            <motion.div
+                              key={gift.id}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: index * 0.1 }}
+                              className={`bg-white/5 rounded-lg p-4 border-2 transition-all cursor-pointer ${
+                                selectedGift?.id === gift.id
+                                  ? 'border-pink-400 bg-pink-400/10'
+                                  : 'border-purple-400/30 hover:border-pink-400/50'
+                              }`}
+                              onClick={() => setSelectedGift(gift)}
+                            >
+                              <div className="text-center mb-3">
+                                <div className="text-4xl mb-2">{gift.icon}</div>
+                                <h4 className="text-lg font-bold text-white mb-1">{gift.name}</h4>
+                                <p className="text-purple-200 text-sm mb-2">{gift.description}</p>
+                                <div className="text-pink-300 font-semibold">{gift.price} 💝</div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        {/* Gift Sending Form */}
+                        {selectedGift && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white/5 rounded-lg p-6 border border-pink-400/30"
+                          >
+                            <div className="text-center mb-6">
+                              <div className="text-6xl mb-4">{selectedGift.icon}</div>
+                              <h4 className="text-2xl font-bold text-white mb-2">{selectedGift.name}</h4>
+                              <p className="text-purple-200 mb-4">{selectedGift.description}</p>
+                              <div className="text-pink-300 font-semibold text-lg">{selectedGift.price} 💝</div>
+                            </div>
+
+                            <div className="space-y-4">
+                              <textarea
+                                value={giftMessage}
+                                onChange={(e) => setGiftMessage(e.target.value)}
+                                placeholder="Write a personal message with your gift..."
+                                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-purple-300 border border-purple-400/30 focus:outline-none focus:border-pink-400 resize-none"
+                                rows={4}
+                              />
+
+                              {isSendingGift && (
+                                <div className="text-center py-2">
+                                  {giftStatus === 'idle' && <p className="text-yellow-300">Sending your gift...</p>}
+                                  {giftStatus === 'success' && <p className="text-green-300">✓ Gift sent successfully!</p>}
+                                  {giftStatus === 'error' && <p className="text-red-300">✗ Failed to send gift, please try again</p>}
+                                </div>
+                              )}
+
+                              <div className="flex gap-3">
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => setSelectedGift(null)}
+                                  className="flex-1 px-4 py-3 rounded-full bg-white/20 text-white font-semibold"
+                                >
+                                  Cancel
+                                </motion.button>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={sendGift}
+                                  disabled={!giftMessage.trim() || isSendingGift}
+                                  className="flex-1 px-4 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold disabled:opacity-50"
+                                >
+                                  Send Gift
+                                </motion.button>
+                              </div>
+                            </div>
                           </motion.div>
                         )}
                       </div>
